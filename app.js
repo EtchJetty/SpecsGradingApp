@@ -644,6 +644,22 @@ app.get("/showProblemSet/:psetId", async (req, res, next) => {
   res.locals.psetId = psetId;
   res.locals.problemSet = await ProblemSet.findOne({_id: psetId});
   res.locals.problems = await Problem.find({psetId: psetId});
+  try {
+    const psetId = req.params.psetId;
+    res.locals.psetId = psetId;
+    res.locals.problemSet = await ProblemSet.findOne({_id: psetId});
+    res.locals.problems = await Problem.find({psetId: psetId});
+    res.locals.courseInfo = await Course.findOne({_id: res.locals.problemSet.courseId}, "ownerId");
+
+    const memberList = await CourseMember.find({courseId: res.locals.courseInfo._id});
+    const memberIds = memberList.map((x) => x.studentId);
+    //console.log("memberIds = "+JSON.stringify(memberIds))
+    res.locals.members = await User.find({_id: {$in: memberIds}});
+    //console.dir(res.locals.members)
+  } catch (e) {
+    next(e);
+  }
+
   res.locals.courseInfo = await Course.findOne({_id: res.locals.problemSet.courseId}, "ownerId");
   res.locals.myAnswers = await Answer.find({psetId: psetId, studentId: req.user._id});
   res.locals.pids = res.locals.myAnswers.map((x) => {
@@ -1642,13 +1658,9 @@ app.get("/showOneStudentInfo/:courseId/:studentId", async (req, res, next) => {
     res.locals.studentsInfo = await User.find({_id: {$in: res.locals.students}});
 
     const courseId = res.locals.courseInfo._id;
-    res.locals.answers = 
-       await Answer.find({courseId: courseId})
-             .populate('skills');
+    res.locals.answers = await Answer.find({courseId: courseId}).populate("skills");
 
-    res.locals.problems = 
-       await Problem.find({courseId: courseId})
-            .populate('skills');
+    res.locals.problems = await Problem.find({courseId: courseId}).populate("skills");
 
     res.locals.reviews = await Review.find({courseId: courseId});
 

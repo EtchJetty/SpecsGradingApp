@@ -1,5 +1,108 @@
 <%- include('bootheader') -%>
 <%- include('menubar') -%>
+<style>
+  .blurb {
+    padding: 5px 10px !important;
+    border: solid 1px #bbb !important;
+    border-radius: 10px;
+    box-shadow: 2px 2px 4px 0 #00000833 !important;
+  }
+
+  .module {
+    float: left;
+    width: 100%;
+  }
+
+  /* .blurb .header {
+    min-height: 55px;
+    margin-bottom: .375em;
+  } */
+
+  .blurb .module {
+    float: none;
+  }
+
+  .heading {
+    font: 100%/1.125 'Lucida Grande', 'Lucida Sans Unicode', 'GNU Unifont', Verdana, Helvetica, sans-serif;
+    border: 0;
+    outline: 0;
+    font-style: inherit;
+    list-style: none;
+    padding: 0;
+    line-height: 1.125;
+    font-weight: 400;
+    word-wrap: break-word;
+    font-size: 14px !important;
+    font-family: inherit !important;
+    color: #888;
+    display: block;
+    background: transparent;
+    margin: .375em 5.25em 0 65px;
+    /* margin-top: 0.175em; */
+    /* margin-right: 5.25em; */
+    /* margin-bottom: 0.175em; */
+    /* margin-left: 65px; */
+    /* margin-left: calc((80px + 25px) * 2 + 10px) !important; */
+  }
+
+  dl {
+    border: 0;
+    outline: 0;
+    font-weight: inherit;
+    font-style: inherit;
+    font-size: 100%;
+    font-family: inherit;
+    vertical-align: baseline;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  dl.stats {
+    text-align: right;
+    background: none;
+    /* margin-top: .643em; */
+    box-shadow: none;
+  }
+
+  .blurb li,
+  .actions>*,
+  .stats>*,
+  .meta ul li {
+    list-style: none;
+    display: inline;
+    padding-left: .25em;
+  }
+
+  .blurb dl.stats {
+    float: right;
+    line-height: 1.5;
+  }
+
+  .blurb .stats dt {
+    font-size: 14px !important;
+    color: #888 !important;
+    font-weight: 400 !important;
+  }
+
+  .blurb .stats dd {
+    font-size: .875em !important;
+    color: black;
+    font-weight: 400 !important;
+  }
+
+  .mods li,
+  dl.stats dt,
+  dl.stats dd {
+    background: none;
+    width: auto;
+    min-width: 0;
+    display: inline;
+    clear: none;
+    float: none;
+    margin: auto;
+  }
+</style>
 <div class="p-3 mb-4 bg-light">
   <div class="container-fluid ">
     <h1 class="pb-2 border-bottom">
@@ -7,33 +110,37 @@
     </h1>
     <div class="p-2">
 
-      <ul>
-        <% for(i=0; i<=problems.length-1; i++){ if (!problems[i].visible &&
-                            !(courseInfo.ownerId==user.id) ) { %>
-        <li>Problem Hidden </li>
-        <% } else {%>
-        <li>
-
-
+      <ul class="list-group">
+        <% for(i=0; i<=problems.length-1; i++){ %>
+        <li class="list-group-item blurb mb-3"><div class="header module">
+          <% if (!problems[i].visible && (courseInfo.ownerId==user.id) ) { %>
+          <h4 class="heading">Problem Hidden</h4>
+          <% } else {%>
           <% const skillsToMaster=problems[i].skills.filter( (skill)=>
-                                        !skills.includes(skill.toString())).length
-                                        %>
-          <% if (skillsToMaster==0){ %>
-          <a href="/showProblem/<%= problems[i]._id %>">
-            <span style="color:green">
-              <%= problems[i].description || "no name" %>
-              all skills in this problem have been mastered
-            </span>
-          </a>
+                      !skills.includes(skill.toString())).length
+                      %>
 
-          <% } else { %>
           <a href="/showProblem/<%= problems[i]._id %>">
             <%= problems[i].description || "no name" %>
-          </a>
+          </a></div>
+          <dl class="stats">
+            <dt class="skills">Skills:</dt>
+            <dd class="skills">
+              <% if (skillsToMaster==0){ %>
+              <span style="color:green">
+                all skills in this problem have been mastered
+              </span>
+              <% } else { %>
+              <%= skillsToMaster %>/<%= problems[i].skills.length %> skills left to
+              master<br>
+              <% } %>
+            </dd>
+            <dt class="submissions">Submissions:</dt>
+            <dd class="submissions">TBA/<%= members.length %></dd>
 
-          <%= skillsToMaster %>/<%= problems[i].skills.length %> skills left to
-          master<br>
-          <% } %>
+          </dl>
+
+
         </li>
         <% }} %>
       </ul>
