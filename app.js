@@ -52,8 +52,8 @@ const MongoStore = require("connect-mongo")(session);
 
 const mongoose = require("mongoose");
 
-//mongoose.connect("mongodb+srv://" + process.env.MONGO_USER + ":" + process.env.MONGO_PW + "@cluster0.f3f06uz.mongodb.net/test", {useNewUrlParser: true, useUnifiedTopology: true, family: 4});
-mongoose.connect("mongodb://localhost/sga_v_1_0", {useNewUrlParser: true, useUnifiedTopology: true, family: 4});
+mongoose.connect("mongodb+srv://" + process.env.MONGO_USER + ":" + process.env.MONGO_PW + "@cluster0.f3f06uz.mongodb.net/test", {useNewUrlParser: true, useUnifiedTopology: true, family: 4});
+// mongoose.connect("mongodb://localhost/sga_v_1_0", {useNewUrlParser: true, useUnifiedTopology: true, family: 4});
 
 const db = mongoose.connection;
 db.on("error", console.error.bind(console, "connection error:"));
